@@ -42,7 +42,8 @@ def calculate_metrics():
                 ('fecha', 'fecha'),
                 ('ubicacion', 'lugar'),
                 ('vehiculo_asegurado', 'vehiculo_asegurado'),
-                ('vehiculo_tercero', 'vehiculo_tercero')
+                ('vehiculo_tercero', 'vehiculo_tercero'),
+                ('responsabilidad_aparente', 'responsabilidad')
             ]
             
             claim_has_swap = False
@@ -80,7 +81,7 @@ def calculate_metrics():
                 if match:
                     field_matches[ext_key] += 1
                 else:
-                    status = "INTERCAMBIADO ⚠️" if is_swap else "NO COINCIDE ❌"
+                    status = "INTERCAMBIADO" if is_swap else "NO COINCIDE"
                     # Truncar cadenas largas para visualización
                     d_gt = (str(gt_val)[:28] + '..') if len(str(gt_val)) > 28 else str(gt_val)
                     d_ext = (str(ext_val)[:28] + '..') if len(str(ext_val)) > 28 else str(ext_val)
@@ -90,18 +91,18 @@ def calculate_metrics():
                 swaps += 1
 
     print("-" * 110)
-    print("\n=== 📊 REPORTE DE VALIDACIÓN ===")
+    print("\n=== REPORTE DE VALIDACIÓN ===")
     print(f"Total de Reclamos Procesados: {total_claims}")
     print(f"Tiempo Promedio de Procesamiento: {statistics.mean(processing_times):.2f}s")
     
-    print("\n🎯 Precisión por Campo:")
-    for field in ['fecha', 'ubicacion', 'vehiculo_asegurado', 'vehiculo_tercero']:
+    print("\n Precisión por Campo:")
+    for field in ['fecha', 'ubicacion', 'vehiculo_asegurado', 'vehiculo_tercero', 'responsabilidad_aparente']:
         total = field_totals[field]
         matches = field_matches[field]
         accuracy = (matches / total * 100) if total > 0 else 0
-        print(f"  - {field:<20}: {accuracy:>6.1f}%  ({matches}/{total})")
+        print(f"  - {field:<25}: {accuracy:>6.1f}%  ({matches}/{total})")
 
-    print(f"\n⚠️  Intercambio de Roles (Vehículos): {swaps} reclamos ({swaps/total_claims*100:.1f}%)")
+    print(f"\n  Intercambio de Roles (Vehículos): {swaps} reclamos ({swaps/total_claims*100:.1f}%)")
     print("   (El modelo confundió quién era el asegurado vs el tercero)")
 
 if __name__ == "__main__":
