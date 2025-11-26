@@ -54,12 +54,40 @@ def generar_reclamo():
     consecuencia = random.choice(consecuencias)
     fecha = generar_fecha_reciente()
     
-    # Plantillas de redacción
+    # Plantillas de redacción (variedad de estilos)
     plantillas = [
+        # Estilo conversacional
         f"Hola, soy {nombre}. El {fecha} iba por {calle} con mi {mi_auto} y un {otro_auto} {accion}. {consecuencia}.",
+        f"Buenas, necesito hacer un reclamo. Ayer en {calle} un {otro_auto} {accion}. Yo iba en mi {mi_auto}. {consecuencia}.",
+        f"Hola buenas tardes, el {fecha} tuve un accidente. Iba por {calle} y un {otro_auto} {accion}. Mi auto es un {mi_auto}.",
+        
+        # Estilo formal/estructurado
         f"Siniestro ocurrido el {fecha}. Lugar: {calle}. Vehículo asegurado: {mi_auto}. Tercero: {otro_auto}. Descripción: {accion}.",
+        f"Fecha del siniestro: {fecha}. Ubicación: {calle}. Mi vehículo: {mi_auto}. Vehículo tercero: {otro_auto}. {accion}. Daños: {consecuencia}.",
+        f"Denuncio siniestro del día {fecha} en {calle}. Conducía mi {mi_auto} cuando un {otro_auto} {accion}.",
+        
+        # Estilo breve/telegráfico
         f"Tuve un accidente en {calle} ayer. Un {otro_auto} {accion} a mi {mi_auto}. {consecuencia}.",
-        f"{fecha}: Choque en {calle}. {mi_auto} vs {otro_auto}. {accion}."
+        f"{fecha}: Choque en {calle}. {mi_auto} vs {otro_auto}. {accion}.",
+        f"Accidente {fecha}, {calle}. {otro_auto} {accion}. Mi auto: {mi_auto}. {consecuencia}.",
+        
+        # Estilo informal/coloquial argentino
+        f"Che, {fecha} me chocaron en {calle}. Iba en mi {mi_auto} y un {otro_auto} {accion}. {consecuencia}.",
+        f"Hola, mira, ayer estaba por {calle} con el {mi_auto} y un loco en un {otro_auto} {accion}. {consecuencia}.",
+        f"Buen día, te cuento que el {fecha} un {otro_auto} {accion} cuando yo iba tranquilo en mi {mi_auto} por {calle}.",
+        
+        # Estilo queja/frustración
+        f"No puedo creer lo que me pasó el {fecha}. Estaba en {calle} con mi {mi_auto} y un {otro_auto} {accion}. Ahora {consecuencia}.",
+        f"Vengo a denunciar porque el {fecha} un irresponsable en un {otro_auto} {accion} en {calle}. Tengo un {mi_auto} y {consecuencia}.",
+        
+        # Estilo descriptivo/detallado
+        f"El día {fecha} aproximadamente, circulaba por {calle} conduciendo mi {mi_auto} cuando un vehículo {otro_auto} {accion}. Como resultado, {consecuencia}.",
+        f"Me presento para informar un siniestro ocurrido el {fecha}. Mientras transitaba por {calle} en mi {mi_auto}, un {otro_auto} {accion}. Consecuencia: {consecuencia}.",
+        
+        # Estilo WhatsApp/mensaje rápido
+        f"hola {fecha} choque en {calle} un {otro_auto} {accion} yo tengo {mi_auto} {consecuencia}",
+        f"buenas me chocaron ayer en {calle} tengo un {mi_auto} y un {otro_auto} {accion}",
+        f"necesito ayuda me chocaron!! {fecha} en {calle}, era un {otro_auto}, mi auto es {mi_auto}, {consecuencia}"
     ]
     
     texto_base = random.choice(plantillas)
