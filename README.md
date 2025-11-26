@@ -1,86 +1,80 @@
-# Extractor de Datos de Siniestros con IA
+# Claims Extractor
 
-Este proyecto implementa un sistema inteligente para extraer información estructurada a partir de descripciones de accidentes de tránsito no estructuradas (texto libre). Combina técnicas de **Fuzzing** para la generación de datos sintéticos y **LLMs (Modelos de Lenguaje Grande)** para el procesamiento de información.
+> 🚗 LLM-powered structured data extraction from messy, informal car accident descriptions.
 
-## 🎯 Objetivo
+**Transform chaotic user input into clean JSON — a task impossible with regex or SQL.**
 
-Demostrar la capacidad de los LLMs para "limpiar" y estructurar datos ruidosos del mundo real, una tarea que sería imposible con expresiones regulares (Regex) o SQL tradicional.
+## The Problem
 
-El sistema toma descripciones informales como:
-> *"Tuve un accidente en av libertador ayer un ford fiesta me rayó el costado a mi honda civic necesito grúa"*
+Insurance claim descriptions are messy:
 
-Y las convierte en JSON estructurado:
+```
+"had an accident on av libertador yesterday a ford fiesta scratched my honda civic need a tow"
+```
+
+## The Solution
+
+An LLM extracts structured data:
+
 ```json
 {
-  "fecha": "2024-03-18",
-  "ubicacion": "Av. Libertador",
-  "vehiculo_asegurado": "Honda Civic",
-  "vehiculo_tercero": "Ford Fiesta",
-  "responsabilidad_aparente": "tercero"
+  "date": "2024-03-18",
+  "location": "Av. Libertador",
+  "insured_vehicle": "Honda Civic",
+  "third_party_vehicle": "Ford Fiesta",
+  "liability": "third_party"
 }
 ```
 
-## 🏗️ Arquitectura del Proyecto
+## How It Works
 
-El proyecto consta de tres módulos principales:
+```
+Fuzzer → Synthetic Claims → LLM (Llama 3.2) → Structured JSON → Validator
+```
 
-1.  **Generación de Datos (Fuzzing):**
-    *   Script: `fuzzing/generate_claims.py`
-    *   Genera reclamos sintéticos inyectando "ruido" intencional: errores de ortografía, falta de puntuación, jerga ("me chocó de atrás"), y formatos de fecha variados.
-    *   Simula la variabilidad de datos reales ingresados por usuarios.
+1. **Fuzzing** generates noisy test data (typos, slang, missing punctuation)
+2. **LLM Processing** extracts and normalizes entities via Ollama
+3. **Validation** measures accuracy against ground truth
 
-2.  **Procesamiento con IA:**
-    *   Script: `src/process_claims.py`
-    *   Utiliza **Ollama** con el modelo **Llama 3.2**.
-    *   Implementa un *System Prompt* robusto diseñado para inferir roles (quién chocó a quién) y normalizar entidades.
+## Results
 
-3.  **Validación y Métricas:**
-    *   Script: `src/validate_results.py`
-    *   Compara la salida del LLM contra el "Ground Truth" (la verdad absoluta generada por el fuzzer).
-    *   Calcula precisión por campo y detecta errores lógicos (como intercambiar vehículos).
+| Field | Accuracy |
+|-------|----------|
+| Location | 100% |
+| Vehicles | 98% |
+| Liability | 98% |
+| Date | 76%* |
 
-## 🚀 Cómo Ejecutar
+*\*Date errors due to relative references ("yesterday") — fixable with context injection.*
 
-### Prerrequisitos
-- Python 3
-- Ollama instalado y ejecutándose (`ollama serve`)
-- Modelo Llama 3.2 (`ollama pull llama3.2`)
+## Quick Start
 
-### Pasos
+```bash
+# Prerequisites: Python 3, Ollama running with Llama 3.2
+ollama pull llama3.2
 
-1.  **Generar Datos de Prueba:**
-    ```bash
-    python3 fuzzing/generate_claims.py
-    ```
-    *Esto creará `data/synthetic_claims.jsonl` con 50 casos de prueba.*
+# Generate test data
+python3 fuzzing/generate_claims.py
 
-2.  **Ejecutar el Extractor:**
-    ```bash
-    python3 src/process_claims.py
-    ```
-    *Procesará los reclamos y guardará los resultados en `data/processed_claims.jsonl`.*
+# Run extraction + validation
+python3 src/process_claims.py
+```
 
-3.  **Ver Resultados y Métricas:**
-    ```bash
-    python3 src/validate_results.py
-    ```
-    *Mostrará una tabla comparativa y el porcentaje de precisión.*
+## Tech Stack
 
-## 📊 Resultados Obtenidos
+- **Python 3** — Core language
+- **Ollama + Llama 3.2** — Local LLM inference
+- **JSONL** — Data format
 
-En pruebas locales con Llama 3.2 (3B parámetros), el sistema logró:
-- **100%** de precisión en detección de Ubicación.
-- **98%** de precisión en identificación de Vehículos.
-- **98%** de precisión en asignación de Responsabilidad.
+## Project Structure
 
-*Ver el reporte completo en `metrics_report.md`.*
-
-## 🛠️ Tecnologías Utilizadas
-
-- **Python 3**: Lenguaje principal.
-- **Ollama**: Runtime local para LLMs.
-- **Llama 3.2**: Modelo de lenguaje optimizado para instrucciones.
-- **JSONL**: Formato de datos para procesamiento eficiente.
+```
+├── fuzzing/generate_claims.py  # Synthetic data generator
+├── src/process_claims.py       # LLM extraction pipeline
+├── src/validate_results.py     # Accuracy metrics
+└── data/                       # Input/output datasets
+```
 
 ---
-*Proyecto desarrollado para la materia de Inteligencia Artificial.*
+
+*Built for an AI course — demonstrating NLP concepts with Transformers in a practical application.*
